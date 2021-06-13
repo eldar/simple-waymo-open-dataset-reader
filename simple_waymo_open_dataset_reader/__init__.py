@@ -19,6 +19,7 @@ from . import dataset_pb2
 class WaymoDataFileReader:
     def __init__(self, filename):
         self.file = open(filename, "rb")
+        self.table = self.get_record_table()
 
     def get_record_table(self):
         """ Generate and return a table of the offset of all frame records in the file.
@@ -80,6 +81,9 @@ class WaymoDataFileReader:
             frame = dataset_pb2.Frame()
             frame.ParseFromString(data)
             return frame
+
+    def __len__(self):
+        return len(self.table)
 
     def __iter__(self):
         """ Simple iterator through the file. Note that the iterator will iterate from the current position, does not support concurrent iterators and will not reset back to the beginning when the end is reached. To reset to the first frame, call reader.seek(0)
